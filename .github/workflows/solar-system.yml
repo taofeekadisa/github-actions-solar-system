@@ -16,6 +16,7 @@ jobs:
         runs-on: ubuntu-latest
         container:
           image: node:20
+          
         steps:
         - name: Checkout Repository
           uses: actions/checkout@v4
@@ -91,3 +92,22 @@ jobs:
           with:
             push: true
             tags: ghcr.io/${{ github.repository_owner }}/solar-system:${{ github.sha }}
+      dev-deploy:
+        environment: development
+        needs: docker
+        permissions:
+          packages: write
+        runs-on: ubuntu-latest
+        steps:
+          - name: Set up Kubecl
+            uses: azure/setup-kubectl@v3
+            with:
+             version: 'v1.26.0'
+          - uses: azure/k8s-set-context@v3
+            name: Set Kube Context
+            with:
+              method: kubeconfig
+              kubeconfig: ${{ secrets.KUBECONFIG }}
+          - name: Run Kubectl Command
+            runs: kubectl version --short -o yaml
+              
