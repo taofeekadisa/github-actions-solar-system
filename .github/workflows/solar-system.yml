@@ -93,7 +93,8 @@ jobs:
             push: true
             tags: ghcr.io/${{ github.repository_owner }}/solar-system:${{ github.sha }}
     dev-deploy:
-      environment: development
+      environment:
+        name: development
       needs: docker
       runs-on: ubuntu-latest
       steps:
@@ -110,4 +111,5 @@ jobs:
             kubeconfig: ${{ secrets.KUBECONFIG }}
         - name: Run Kubectl Command
           runs: kubectl version --short -o yaml
+
               
